@@ -1,6 +1,11 @@
 import { useState } from "react";
+import emailjs from "@emailjs/browser";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Contact = () => {
+  const COMPANY_EMAIL = "Zogolabs@gmail.com";
+
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -8,49 +13,69 @@ const Contact = () => {
     message: "",
   });
 
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [e.target.name]: e.target.value,
-    });
+    }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // const receiverEmail = "qasim432712@gmail.com";
-    const receiverEmail = "Zogolabs@gmail.com";
-    const emailSubject = formData.subject;
+    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+    const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
-    const emailBody = `
-Name: ${formData.fullName}
-Email: ${formData.email}
+    if (!serviceId || !templateId || !publicKey) {
+      toast.error("EmailJS keys missing hain. .env file check karo.");
+      return;
+    }
 
-Message:
-${formData.message}
-`;
+    setLoading(true);
 
-    const mailUrl = `mailto:${receiverEmail}?subject=${encodeURIComponent(
-      emailSubject
-    )}&body=${encodeURIComponent(emailBody)}`;
+    const templateParams = {
+      to_email: COMPANY_EMAIL,
+      from_name: formData.fullName,
+      from_email: formData.email,
+      subject: formData.subject,
+      message: formData.message,
+    };
 
-    window.location.href = mailUrl;
+    try {
+      await emailjs.send(serviceId, templateId, templateParams, publicKey);
 
-    setFormData({
-      fullName: "",
-      email: "",
-      subject: "",
-      message: "",
-    });
+      toast.success("Message successfully send ho gaya!");
+
+      setFormData({
+        fullName: "",
+        email: "",
+        subject: "",
+        message: "",
+      });
+    } catch (error) {
+      console.error("Email send error:", error);
+      toast.error("Message send nahi ho saka. EmailJS settings check karo.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-   <section
-  id="contact"
-  className="min-h-[calc(100vh-76px)] bg-[#070707] px-6 py-16 text-white scroll-mt-28"
->
+    <section
+      id="contact"
+      className="min-h-[calc(100vh-76px)] bg-[#070707] px-6 py-16 text-white scroll-mt-28"
+    >
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        theme="dark"
+        pauseOnHover
+      />
+
       <div className="mx-auto max-w-7xl">
-        {/* Heading */}
         <div className="text-center">
           <span className="inline-flex rounded-full border border-[#2d8cff]/30 bg-[#071323] px-5 py-2 text-[10px] font-bold uppercase tracking-[0.35em] text-[#2d8cff]">
             Get In Touch
@@ -66,12 +91,9 @@ ${formData.message}
           </p>
         </div>
 
-        {/* Contact Content */}
         <div className="mt-14 grid grid-cols-1 gap-8 lg:grid-cols-2">
-          {/* Left Side Info */}
           <div>
             <div className="space-y-6">
-              {/* Email */}
               <div className="flex items-center gap-5 rounded-xl bg-[#141414] p-7">
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#ff2aa3]/10 text-[#ff2aa3]">
                   <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none">
@@ -93,13 +115,12 @@ ${formData.message}
 
                 <div>
                   <p className="text-sm font-semibold text-gray-500">Email</p>
-                 <h3 className="mt-1 text-base font-bold text-white">
-  Zogolabs@gmail.com
-</h3>
+                  <h3 className="mt-1 text-base font-bold text-white">
+                    {COMPANY_EMAIL}
+                  </h3>
                 </div>
               </div>
 
-              {/* Phone */}
               <div className="flex items-center gap-5 rounded-xl bg-[#141414] p-7">
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#8b5cff]/10 text-[#8b5cff]">
                   <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none">
@@ -121,7 +142,6 @@ ${formData.message}
                 </div>
               </div>
 
-              {/* Location */}
               <div className="flex items-center gap-5 rounded-xl bg-[#141414] p-7">
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#1683ff]/10 text-[#1683ff]">
                   <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none">
@@ -152,7 +172,6 @@ ${formData.message}
               </div>
             </div>
 
-            {/* Social Icons */}
             <div className="mt-8 flex items-center gap-4">
               <p className="text-sm text-gray-500">Follow us</p>
 
@@ -168,7 +187,6 @@ ${formData.message}
             </div>
           </div>
 
-          {/* Form */}
           <form
             onSubmit={handleSubmit}
             className="rounded-2xl border border-[#8b5cff]/70 bg-[#141414] p-8 shadow-[0_0_30px_rgba(139,92,255,0.15)]"
@@ -179,10 +197,14 @@ ${formData.message}
 
             <div className="mt-7 grid grid-cols-1 gap-5 md:grid-cols-2">
               <div>
-                <label className="text-sm font-semibold text-gray-500">
+                <label
+                  htmlFor="fullName"
+                  className="text-sm font-semibold text-gray-500"
+                >
                   Full Name
                 </label>
                 <input
+                  id="fullName"
                   type="text"
                   name="fullName"
                   value={formData.fullName}
@@ -194,10 +216,14 @@ ${formData.message}
               </div>
 
               <div>
-                <label className="text-sm font-semibold text-gray-500">
+                <label
+                  htmlFor="email"
+                  className="text-sm font-semibold text-gray-500"
+                >
                   Email
                 </label>
                 <input
+                  id="email"
                   type="email"
                   name="email"
                   value={formData.email}
@@ -210,10 +236,14 @@ ${formData.message}
             </div>
 
             <div className="mt-5">
-              <label className="text-sm font-semibold text-gray-500">
+              <label
+                htmlFor="subject"
+                className="text-sm font-semibold text-gray-500"
+              >
                 Subject
               </label>
               <input
+                id="subject"
                 type="text"
                 name="subject"
                 value={formData.subject}
@@ -225,10 +255,14 @@ ${formData.message}
             </div>
 
             <div className="mt-5">
-              <label className="text-sm font-semibold text-gray-500">
+              <label
+                htmlFor="message"
+                className="text-sm font-semibold text-gray-500"
+              >
                 Message
               </label>
               <textarea
+                id="message"
                 name="message"
                 value={formData.message}
                 onChange={handleChange}
@@ -236,14 +270,16 @@ ${formData.message}
                 required
                 rows="5"
                 className="mt-2 w-full resize-none rounded-lg border border-white/5 bg-[#070707] px-4 py-4 text-white outline-none transition-all duration-300 placeholder:text-gray-600 focus:border-[#8b5cff]"
-              ></textarea>
+              />
             </div>
 
             <button
               type="submit"
-              className="mt-6 flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#ff2aa3] via-[#8b5cff] to-[#2d8cff] px-6 py-4 text-base font-extrabold text-white shadow-[0_0_25px_rgba(139,92,255,0.35)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_40px_rgba(139,92,255,0.6)] active:scale-95"
+              disabled={loading}
+              className="mt-6 flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#ff2aa3] via-[#8b5cff] to-[#2d8cff] px-6 py-4 text-base font-extrabold text-white shadow-[0_0_25px_rgba(139,92,255,0.35)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_40px_rgba(139,92,255,0.6)] active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
             >
-              Send Message
+              {loading ? "Sending..." : "Send Message"}
+
               <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none">
                 <path
                   d="M22 2 11 13"
@@ -263,7 +299,6 @@ ${formData.message}
           </form>
         </div>
 
-        {/* Footer */}
         <footer className="mt-24 border-t border-transparent bg-gradient-to-r from-[#ff2aa3] via-[#8b5cff] to-[#2d8cff] pt-[1px]">
           <div className="flex flex-col items-center justify-between gap-4 bg-[#070707] py-7 md:flex-row">
             <p className="text-sm text-gray-500">

@@ -4,7 +4,7 @@ const Services = () => {
   const services = [
     {
       title: "Game Development",
-      desc: "From concept to launch — immersive games across mobile, PC, and console platforms.",
+      desc: "Custom mobile, PC, and console game development with engaging gameplay, optimized performance, and immersive digital experiences.",
       color: "#ff2aa3",
       icon: (
         <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none">
@@ -20,7 +20,7 @@ const Services = () => {
     },
     {
       title: "App Development",
-      desc: "Native and cross-platform apps with seamless UX and peak performance.",
+      desc: "Modern mobile app development for Android and iOS with responsive interfaces, smooth performance, and user-friendly experiences.",
       color: "#8b5cff",
       icon: (
         <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none">
@@ -44,7 +44,7 @@ const Services = () => {
     },
     {
       title: "Software Solutions",
-      desc: "Custom enterprise software, APIs, and scalable backend infrastructure.",
+      desc: "Custom software development, scalable APIs, backend systems, and business solutions built for reliability and growth.",
       color: "#1683ff",
       icon: (
         <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none">
@@ -60,17 +60,11 @@ const Services = () => {
     },
     {
       title: "Web Development",
-      desc: "Modern, responsive websites and web apps built for speed and conversion.",
+      desc: "Fast, responsive, and SEO-friendly websites and web applications designed for performance, usability, and business growth.",
       color: "#ff7a00",
       icon: (
         <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none">
-          <circle
-            cx="12"
-            cy="12"
-            r="9"
-            stroke="currentColor"
-            strokeWidth="2"
-          />
+          <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2" />
           <path
             d="M3 12h18M12 3c2.2 2.4 3.2 5.4 3.2 9S14.2 18.6 12 21M12 3c-2.2 2.4-3.2 5.4-3.2 9s1 6.6 3.2 9"
             stroke="currentColor"
@@ -82,7 +76,7 @@ const Services = () => {
     },
     {
       title: "Graphic Design",
-      desc: "Brand identity, marketing assets, and visual storytelling that stand out.",
+      desc: "Creative branding, marketing graphics, visual identity, and digital design solutions that help businesses stand out.",
       color: "#d946ef",
       icon: (
         <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none">
@@ -100,7 +94,7 @@ const Services = () => {
     },
     {
       title: "UI/UX Design",
-      desc: "Intuitive interfaces and user journeys designed for delight and engagement.",
+      desc: "User-focused UI/UX design for websites, apps, and digital products with clean interfaces and intuitive user journeys.",
       color: "#ff2aa3",
       icon: (
         <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none">
@@ -122,7 +116,7 @@ const Services = () => {
     },
     {
       title: "3D Modeling & Environment",
-      desc: "Photorealistic 3D assets, environments, and animations for games and media.",
+      desc: "High-quality 3D models, environments, assets, and animations for games, interactive projects, visualization, and digital media.",
       color: "#8b5cff",
       icon: (
         <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none">
@@ -146,22 +140,28 @@ const Services = () => {
   return (
     <section
       id="services"
+      aria-labelledby="services-heading"
       className="scroll-mt-24 min-h-[calc(100vh-76px)] bg-[#070707] px-6 py-16 text-white"
     >
       <div className="mx-auto max-w-7xl">
         <div className="text-center">
-          <h2 className="bg-gradient-to-r from-[#ff35d1] via-[#a55cff] to-[#2d8cff] bg-clip-text text-4xl font-extrabold text-transparent md:text-5xl">
-            Our Services
+          <h2
+            id="services-heading"
+            className="bg-gradient-to-r from-[#ff35d1] via-[#a55cff] to-[#2d8cff] bg-clip-text text-4xl font-extrabold text-transparent md:text-5xl"
+          >
+            Game, App, Web & Software Development Services
           </h2>
 
-          <p className="mt-5 text-base text-gray-500 md:text-lg">
-            End-to-end creative and technical solutions for the digital age
+          <p className="mx-auto mt-5 max-w-3xl text-base leading-7 text-gray-400 md:text-lg">
+            Zogo Lab provides creative and technical development services in
+            Lahore, Pakistan, including game development, mobile apps, websites,
+            software solutions, UI/UX design, graphic design, and 3D production.
           </p>
         </div>
 
         <div className="mt-14 grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-4">
           {services.map((service) => (
-            <div
+            <article
               key={service.title}
               className="group relative overflow-hidden rounded-2xl bg-[#131313] p-7 transition-all duration-300 hover:-translate-y-2"
             >
@@ -170,25 +170,27 @@ const Services = () => {
                 style={{
                   background: `linear-gradient(to right, ${service.color}, transparent)`,
                 }}
-              ></div>
+              />
 
               <div
                 className="absolute inset-0 rounded-2xl border opacity-60 transition-all duration-300 group-hover:opacity-100"
                 style={{ borderColor: service.color }}
-              ></div>
+              />
 
               <div className="relative z-10">
-                <div style={{ color: service.color }}>{service.icon}</div>
+                <div style={{ color: service.color }} aria-hidden="true">
+                  {service.icon}
+                </div>
 
                 <h3 className="mt-6 text-lg font-extrabold text-white">
                   {service.title}
                 </h3>
 
-                <p className="mt-5 text-sm leading-7 text-gray-500">
+                <p className="mt-5 text-sm leading-7 text-gray-400">
                   {service.desc}
                 </p>
               </div>
-            </div>
+            </article>
           ))}
         </div>
       </div>
